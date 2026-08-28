@@ -3,6 +3,11 @@ __pycache__/
 .venv/
 .pytest_cache/
 submissions/*.bundle
+# ...except the sealed bundle actually submitted, kept in-repo as the
+# record of what was handed in (it is ~100 KB and self-verifying: its
+# MANIFEST.json carries the sha256 of every bundled file and of all 39
+# kit/*.py as received).
+!submissions/SPIDERMAN.bundle
 runs/
 kit/world/*/
 !kit/world/*.py
