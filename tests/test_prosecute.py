@@ -531,28 +531,50 @@ def test_prosecute_stays_well_under_the_five_second_deadline_even_on_a_large_tra
     assert result["v"] == 1
 
 
-def test_starter_end_to_end_against_the_full_fixture_set(labelled_fixtures):
+def test_prosecutor_end_to_end_against_the_full_fixture_set(labelled_fixtures):
+    """The whole prosecutor against the whole labelled set.
+
+    This test used to pin the STARTER's incompleteness (`recall < 0.15`, and
+    `claimed == 0` for the sixteen stub hooks). That was an accurate
+    description of a prosecutor implementing 1 of 17 classes, and it stops
+    being the contract the moment the other sixteen are written — so it is
+    retargeted here at the stronger property, not deleted. Every assertion
+    about QUALITY below is the one the starter made, unchanged: no errors, no
+    timeouts, no false claims, no schema-invalid or over-quota claims, and
+    perfect precision. What changed is the recall floor and the per-class
+    expectation.
+
+    The precision/false-claim assertions are the ones that matter most and are
+    kept exact rather than loosened: CONTRACTS.md 6.2 charges `-0.8 * weight`
+    for a false claim, so a detector that buys recall with false positives is
+    losing points, not gaining them, and this test is where that regression
+    would show up first."""
     report = score_prosecutor(prosecute, labelled_fixtures)
 
     assert report["n_fixtures"] == len(labelled_fixtures)
     assert report["n_errors"] == 0
     assert report["n_timeouts"] == 0
-    assert report["false"] == 0, "the starter's one detector must never file a false claim on this fixture set"
-    assert report["rejected"] == 0, "the starter must never emit a schema-invalid or over-quota claim on its own"
+    assert report["false"] == 0, "a false claim costs 0.8 x weight -- never trade precision for recall"
+    assert report["rejected"] == 0, "must never emit a schema-invalid or over-quota claim on its own"
 
     # precision perfect: it never guesses wrong when it does file
     assert report["precision"] == 1.0
-    # recall low: it implements exactly 1 of 17 classes
-    assert 0.0 < report["recall"] < 0.15
     assert report["false_claim_rate"] == 0.0
+    # ...and recall is now the point: every class implemented, every real
+    # instance found AND cited on the evidence that actually proves it.
+    assert report["recall"] == 1.0, (
+        f"expected every labelled instance found and correctly cited, got "
+        f"{report['verified']} verified"
+    )
 
-    assert report["per_class"]["enforcement_failure"]["recall"] == 1.0
-    assert report["per_class"]["enforcement_failure"]["present"] == 2
-    assert report["per_class"]["enforcement_failure"]["verified"] == 2
-    # every other class: present in the fixtures, but never claimed (stub hooks)
-    for cls in CLASSES - {"enforcement_failure"}:
-        assert report["per_class"][cls]["present"] >= 2
-        assert report["per_class"][cls]["claimed"] == 0
+    for cls in CLASSES:
+        stats = report["per_class"][cls]
+        assert stats["present"] >= 2, f"{cls}: fixture set should carry at least 2 instances"
+        assert stats["verified"] == stats["present"], (
+            f"{cls}: {stats['verified']}/{stats['present']} verified -- a detector that fires but "
+            f"cites the wrong row scores nothing (CONTRACTS 6.2)"
+        )
+        assert stats["false"] == 0, f"{cls}: filed {stats['false']} false claim(s)"
 
 
 def test_starter_files_nothing_on_clean_fixtures(labelled_fixtures):

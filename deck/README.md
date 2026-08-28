@@ -5,7 +5,7 @@ kiểm chứng bằng dữ liệu thật của kho ngữ liệu. Sửa nó, đ�
 nhất khi viết một lá bài không nằm ở cú pháp, mà ở việc chọn ASK nào khiến lời nói dối khó bị bắt
 nhất — mục 3 dưới đây nói đúng về điều đó.*
 
-*You own this directory (RULES.md section 1). `deck.json` is a legal STARTER deck — 14 cards,
+*You own this directory (RULES.md section 1). `deck.json` is team SPIDERMAN's deck — 14 cards,
 verified against the real, built corpus. Edit it, don't just ship it as-is; the interesting
 decision in authoring a card is not the JSON syntax, it is which `ask` makes this particular lie
 hardest to catch — section 3 below is about exactly that.*
@@ -152,7 +152,7 @@ atk_02 (replica_flip) → atk_10 (identity/aud) → atk_07 (identity/act, CONTRA
 
 Layers alternate deliberately (MCP, MCP, MCP, A2A, MCP, A2A, gateway, gateway, A2A, A2A) so a
 defender who hardens against whatever landed last round is still exposed the next. **Benching
-all 4 blanks is this starter's own aggressive choice, not a rule** — trading an attack for a
+all 4 blanks is this deck's own aggressive choice, not a rule** — trading an attack for a
 blank, and where in the order to place it, is exactly the strategic lever RULES.md's blank
 mechanic creates. Pull it if your own deck wants to bait a false positive instead.
 

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "arena",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": ["-m", "kit.arena_ui.serve", "--run", "spar-adversary-7", "--port", "8765", "--no-open"],
+      "port": 8765
+    }
+  ]
+}
